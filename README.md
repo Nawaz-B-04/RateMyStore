@@ -1,7 +1,7 @@
 #  FullStack Intern Coding Challenge – Roxiler Systems  
 Candidate: Nawazish Majid Bidiwale  
 
-# 🗄️ Credenza
+# 🗄️ RateMyStore
 
 A full-stack web application for managing stores, users, and ratings. Supports **Admin** and **User** roles, with role-specific dashboards and functionalities.
 
