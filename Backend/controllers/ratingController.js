@@ -1,4 +1,4 @@
-// controllers/ratingController.js
+
 import { db } from '../config/dbClient.js';
 import { ratings } from '../config/schema.js';
 import { eq, and } from 'drizzle-orm';
@@ -17,7 +17,6 @@ export const rateStore = async (req, res) => {
     .where(and(eq(ratings.userId, userId), eq(ratings.storeId, storeId)));
 
   if (existingRating.length > 0) {
-    // Update existing
     await db
       .update(ratings)
       .set({ rating })
@@ -25,7 +24,6 @@ export const rateStore = async (req, res) => {
 
     return res.json({ message: 'Rating updated' });
   } else {
-    // Insert new
     await db.insert(ratings).values({ userId, storeId, rating });
     return res.status(201).json({ message: 'Rating submitted' });
   }

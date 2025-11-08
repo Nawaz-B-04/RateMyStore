@@ -1,25 +1,25 @@
-import React from 'react';
+import React from 'react'
 
 const StoreCard = ({ store, onClick }) => {
   return (
     <div
-      className="border border-gray-300 rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer bg-white"
       onClick={() => onClick(store)}
+      className="border border-gray-200 rounded-md p-4 bg-white shadow-sm hover:shadow-md transition cursor-pointer"
     >
-      <h3 className="text-lg font-semibold text-gray-800">{store.name}</h3>
+      <h3 className="text-lg font-semibold text-blue-700">{store.name}</h3>
       <p className="text-sm text-gray-600">{store.address}</p>
 
-      <div className="mt-2 flex items-center space-x-2">
+      <div className="mt-2 flex items-center gap-2">
         <p className="text-sm text-gray-700">Avg Rating:</p>
-        <span className="font-medium text-yellow-500">
-          {store.avgRating?.toFixed(1) || 'N/A'} ★
+        <span className="font-semibold text-blue-600">
+          {store.avgRating?.toFixed(1) || 'N/A'}
         </span>
         <span className="text-xs text-gray-500">
           ({store.totalRatings || 0} ratings)
         </span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default StoreCard;
+export default StoreCard

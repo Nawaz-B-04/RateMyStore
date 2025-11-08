@@ -1,4 +1,3 @@
-// controllers/storeController.js
 import { db } from '../config/dbClient.js';
 import { stores, ratings, users } from '../config/schema.js';
 import { eq } from 'drizzle-orm';
@@ -32,7 +31,6 @@ export const storeLogin = async (req, res) => {
 export const storeRatingsStats = async (req, res) => {
   const storeId = req.user.id;
 
-  // Get all ratings for this store
   const ratingsList = await db
     .select({
       userId: ratings.userId,

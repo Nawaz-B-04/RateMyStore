@@ -1,11 +1,9 @@
-// controllers/authController.js
 import bcrypt from 'bcrypt';
 import { db } from '../config/dbClient.js';
 import { users } from '../config/schema.js';
 import { eq } from 'drizzle-orm';
 import { generateToken } from '../utils/generateToken.js';
 
-// Validation functions
 const validateName = (name) => {
   if (!name || typeof name !== 'string') return false;
   return name.length >= 20 && name.length <= 60;
@@ -41,46 +39,40 @@ const validateEmail = (email) => {
 export const registerUser = async (req, res) => {
   const { name, email, password, address, role } = req.body;
 
-  // Validate required fields
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  // Validate name
   if (!validateName(name)) {
     return res.status(400).json({ 
       message: 'Name must be between 20 and 60 characters' 
     });
   }
 
-  // Validate email
   if (!validateEmail(email)) {
     return res.status(400).json({ 
       message: 'Please provide a valid email address' 
     });
   }
 
-  // Validate password
   if (!validatePassword(password)) {
     return res.status(400).json({ 
       message: 'Password must be 8-16 characters with at least one uppercase letter and one special character' 
     });
   }
 
-  // Validate address if provided
   if (address && !validateAddress(address)) {
     return res.status(400).json({ 
       message: 'Address cannot exceed 400 characters' 
     });
   }
 
-  // Check if email already exists
   const existing = await db.select().from(users).where(eq(users.email, email));
   if (existing.length > 0) {
     return res.status(400).json({ message: 'Email already in use' });
   }
 
-  // Hash password and create user
+  
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await db.insert(users).values({
     name,
@@ -88,7 +80,7 @@ export const registerUser = async (req, res) => {
     password: hashedPassword,
     address,
     role: role || 'user',
-  }).returning();
+  }).returning();  
 
   const token = generateToken({ id: newUser[0].id, role: newUser[0].role });
 
@@ -104,17 +96,19 @@ export const registerUser = async (req, res) => {
   });
 };
 
+
+
+
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate email
+  
   if (!validateEmail(email)) {
     return res.status(400).json({ 
       message: 'Please provide a valid email address' 
     });
   }
 
-  // Validate password presence
   if (!password) {
     return res.status(400).json({ 
       message: 'Password is required' 
@@ -149,7 +143,7 @@ export const updateUserPassword = async (req, res) => {
 
   if (!newPassword) return res.status(400).json({ message: 'New password required' });
 
-  // Validate new password
+
   if (!validatePassword(newPassword)) {
     return res.status(400).json({ 
       message: 'Password must be 8-16 characters with at least one uppercase letter and one special character' 

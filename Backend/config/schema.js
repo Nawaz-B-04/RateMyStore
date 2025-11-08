@@ -1,4 +1,3 @@
-// config/schema.js
 import { pgTable, serial, text, varchar, integer } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -7,7 +6,7 @@ export const users = pgTable('users', {
   address: text('address'),
   email: text('email').notNull().unique(),
   password: text('password').notNull(),
-  role: text('role').default('user'), // user, admin
+  role: text('role').default('user'), 
 });
 
 export const stores = pgTable('stores', {

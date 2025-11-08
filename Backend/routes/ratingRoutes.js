@@ -8,3 +8,5 @@ const router = express.Router();
 router.post('/rate', verifyToken, checkRole(['user']), rateStore);
 
 export default router;
+
+

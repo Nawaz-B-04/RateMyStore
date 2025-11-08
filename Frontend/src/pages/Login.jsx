@@ -1,167 +1,113 @@
-import { useState } from 'react';
-import { useAuth } from '../auth/AuthContext';
-import API from '../services/api';
+import { useState } from 'react'
+import { useAuth } from '../auth/AuthContext'
+import API from '../services/api'
 
 const Login = () => {
-  const { login } = useAuth();
-  const [activeTab, setActiveTab] = useState('user'); 
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-    isStore: false
-  });
-  const [errors, setErrors] = useState({
-    email: '',
-    password: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { login } = useAuth()
+  const [activeTab, setActiveTab] = useState('user')
+  const [form, setForm] = useState({ email: '', password: '', isStore: false })
+  const [errors, setErrors] = useState({ email: '', password: '' })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  // Validation functions
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return 'Please enter a valid email address';
-    }
-    return '';
-  };
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(email) ? '' : 'Enter a valid email'
+  }
 
   const validatePassword = (password) => {
-    if (!password) {
-      return 'Password is required';
-    }
-    return '';
-  };
+    if (!password) return 'Password required'
+    return ''
+  }
 
   const handleInputChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }));
-    
-    // Validate in real-time
-    let error = '';
-    if (field === 'email') {
-      error = validateEmail(value);
-    } else if (field === 'password') {
-      error = validatePassword(value);
-    }
-    
-    setErrors(prev => ({ ...prev, [field]: error }));
-  };
+    setForm(prev => ({ ...prev, [field]: value }))
+    let msg = ''
+    if (field === 'email') msg = validateEmail(value)
+    if (field === 'password') msg = validatePassword(value)
+    setErrors(prev => ({ ...prev, [field]: msg }))
+  }
 
   const validateForm = () => {
     const newErrors = {
       email: validateEmail(form.email),
       password: validatePassword(form.password)
-    };
-    
-    setErrors(newErrors);
-    
-    return !Object.values(newErrors).some(error => error !== '');
-  };
+    }
+    setErrors(newErrors)
+    return !Object.values(newErrors).some(e => e)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
     if (!validateForm()) {
-      setError('Please fix the form errors before submitting');
-      return;
+      setError('Please fix form errors')
+      return
     }
-    
-    setLoading(true);
-    setError('');
+
+    setLoading(true)
+    setError('')
 
     try {
-      let endpoint, payload;
+      let endpoint = '/login'
+      if (form.isStore) endpoint = '/store/store-login'
 
-      if (activeTab === 'admin') {
-        endpoint = '/login';
-        payload = { email: form.email, password: form.password };
-      } else {
-        endpoint = form.isStore ? '/store/store-login' : '/login';
-        payload = { email: form.email, password: form.password };
-      }
+      const res = await API.post(endpoint, { email: form.email, password: form.password })
+      const userData = form.isStore ? res.data.store : res.data.user
 
-      const res = await API.post(endpoint, payload);
-      const userData = form.isStore ? res.data.store : res.data.user;
-      const token = res.data.token;
-
-      login({
-        email: form.email,
-        password: form.password,
-        isStore: form.isStore
-      });
-      
+      login(userData, res.data.token)
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError(err.response?.data?.message || 'Login failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const isSubmitDisabled = () => {
-    return Object.values(errors).some(error => error !== '') || 
-           !form.email || !form.password || loading;
-  };
+    return Object.values(errors).some(e => e) || !form.email || !form.password || loading
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden">
-        {/* Tab Navigation */}
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white rounded-md shadow-md w-full max-w-md">
+
         <div className="flex border-b">
           <button
-            className={`flex-1 py-4 font-medium ${activeTab === 'user' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('user')}
+            className={`flex-1 py-3 font-medium ${activeTab === 'user' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
           >
             User Login
           </button>
           <button
-            className={`flex-1 py-4 font-medium ${activeTab === 'admin' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500'}`}
             onClick={() => setActiveTab('admin')}
+            className={`flex-1 py-3 font-medium ${activeTab === 'admin' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
           >
             Admin Login
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {error && (
-            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded">
-              {error}
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          {error && <div className="bg-red-100 text-red-700 p-2 rounded text-sm">{error}</div>}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               type="email"
               value={form.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-              required
+              className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
             />
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               type="password"
               value={form.password}
               onChange={(e) => handleInputChange('password', e.target.value)}
-              className={`w-full p-2 border rounded-md focus:ring-purple-500 focus:border-purple-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              required
+              className={`w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
             />
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-            )}
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
 
           {activeTab === 'user' && (
@@ -170,41 +116,24 @@ const Login = () => {
                 type="checkbox"
                 id="isStore"
                 checked={form.isStore}
-                onChange={(e) => setForm({...form, isStore: e.target.checked})}
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                onChange={(e) => setForm({ ...form, isStore: e.target.checked })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="isStore" className="ml-2 block text-sm text-gray-700">
-                I am a store owner
-              </label>
+              <label htmlFor="isStore" className="ml-2 text-sm text-gray-700">I am a store owner</label>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isSubmitDisabled()}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-              isSubmitDisabled() 
-                ? 'bg-purple-400 cursor-not-allowed' 
-                : 'bg-purple-600 hover:bg-purple-700'
-            }`}
+            className={`w-full py-2 rounded-md text-white font-medium ${isSubmitDisabled() ? 'bg-blue-300' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Logging in...
-              </span>
-            ) : (
-              `Login as ${activeTab === 'admin' ? 'Admin' : form.isStore ? 'Store' : 'User'}`
-            )}
+            {loading ? 'Logging in...' : `Login as ${activeTab === 'admin' ? 'Admin' : form.isStore ? 'Store' : 'User'}`}
           </button>
         </form>
       </div>
     </div>
+  )
+}
 
-  );
-};
-
-export default Login;
+export default Login

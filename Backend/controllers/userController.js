@@ -1,10 +1,8 @@
-// controllers/userController.js
 import { db } from '../config/dbClient.js';
 import { ratings, stores, users } from '../config/schema.js';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 
-// ✅ Admin - Get all users (role: 'user' only)
 export const getAllUsers = async (req, res) => {
   try {
     const allUsers = await db
@@ -18,7 +16,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// ✅ User - Update own password
 export const updatePassword = async (req, res) => {
   const { id } = req.user;
   const { newPassword } = req.body;

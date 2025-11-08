@@ -1,9 +1,10 @@
 const NotFound = () => {
   return (
-    <div className="text-center mt-20 text-gray-600 text-xl">
-      404 – Page not found.
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-50 text-gray-600">
+      <h1 className="text-4xl font-bold text-blue-700 mb-2">404</h1>
+      <p className="text-lg">Page not found</p>
     </div>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound
