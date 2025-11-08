@@ -26,23 +26,6 @@ A full-stack web application for managing stores, users, and ratings. Supports *
 - Filter users/stores by name, email, address, or role.
 - Logout securely.
 
- ## 🔑 Admin Access for Review
-
-To test admin functionalities (creating users, stores, etc.), use the following credentials:
-
-- **Email:** roxiler@gmail.com
-- **Password:** Roxiler@123
-
-> These credentials are only for testing purposes. You can log in as a normal user or admin to explore the application features.
-
-
-🖼️ Screenshot:  
-![Admin Dashboard](./Frontend/public/Admin.png)  
-![Admin Dashboard](./Frontend/public/Admin(2).png)  
-
-
----
-
 ### 🏪 Store Owner
 - Login as store owner.
 - View personal store performance including:
@@ -50,14 +33,7 @@ To test admin functionalities (creating users, stores, etc.), use the following 
   - Number of ratings
 - Update store password.
 - Logout securely.
-
-🖼️ Screenshot:  
-![Store Dashboard](./Frontend/public/Store.png)
-![Store Dashboard](./Frontend/public/Store(1).png)
-![Store Dashboard](./Frontend/public/Store(3).png)
-
 ---
-
 ### 👤 User
 - Register and login as a normal user.
 - View all listed stores with:
@@ -65,13 +41,7 @@ To test admin functionalities (creating users, stores, etc.), use the following 
 - Rate any store (1–5 stars) and leave feedback.
 - Update password.
 - Logout securely.
-
-🖼️ Screenshot:  
-![User Dashboard](./Frontend/public/User.png)  
-
-
 ---
-
 ## ⚙️ Tech Stack
 
 ### 🔧 Backend:
@@ -94,5 +64,5 @@ To test admin functionalities (creating users, stores, etc.), use the following 
 
 **Clone this repository:**
 ```bash
-git clone https://github.com/Nawaz-B-04/Credenza.git
-cd Credenza
+git clone https://github.com/Nawaz-B-04/RateMyStore.git
+cd RateMyStore
