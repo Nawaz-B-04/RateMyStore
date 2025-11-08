@@ -66,3 +66,17 @@ A full-stack web application for managing stores, users, and ratings. Supports *
 ```bash
 git clone https://github.com/Nawaz-B-04/RateMyStore.git
 cd RateMyStore
+
+After cloning the repo:
+```bash
+# Navigate to Backend
+cd Backend
+# Install dependencies and start backend
+npm install
+node server.js
+
+# Navigate to Frontend
+cd Frontend
+# Install dependencies and start Frontend
+npm install
+npm run dev
